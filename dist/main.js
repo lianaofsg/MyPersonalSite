@@ -6,7 +6,7 @@ const projects = [
         title: "TCF French Exam System(Full-Stack)",
         description: "An online French exam practice platform for reading and listening exercises, allowing users to complete questions in sequential or random order while tracking progress and performance.",
         technologies: ["Vue.js", "TypeScript", "Node.js", "Express", "MySQL", "AWS", "Docker"],
-        image: "images/tcf_read_3.jpg",
+        image: "./images/tcf_read_3.jpg",
         // demoUrl: "#",
         githubUrl: "https://github.com/lianaofsg/TCF-French-Exam"
     },
@@ -15,7 +15,7 @@ const projects = [
         title: "AdventureHub",
         description: "A responsive web platform enabling users to discover, explore, and engage with outdoor adventure activities seamlessly across devices.",
         technologies: ["React", "Next.js", "Tailwind CSS4"],
-        image: "images/adventure.jpg",
+        image: "./images/adventure.jpg",
         demoUrl: "https://adventure-react-next-tailwind.vercel.app",
         githubUrl: "https://github.com/lianaofsg/Adventure-React-Next-Tailwind"
     },
@@ -24,7 +24,7 @@ const projects = [
         title: "Note App(Full-Stack)",
         description: "A full-stack note-taking application enabling secure user authentication, and a responsive, seamless user experience.",
         technologies: ["Django", "Python", "React", "CSS3", "JavaScript", "PostgreSQL", "JWT"],
-        image: "images/note.jpg",
+        image: "./images/note.jpg",
         // demoUrl: "#",
         githubUrl: "https://github.com/lianaofsg/Django-React-FullStack-Note"
     },
