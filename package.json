@@ -6,7 +6,8 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
-    "start": "npx live-server --port=3000 --open=/index.html"
+    "start": "npx live-server --port=3000 --open=/index.html",
+    "vercel-build": "npm run build"
   },
   "keywords": ["portfolio", "programmer", "developer", "typescript"],
   "author": "Your Name",
