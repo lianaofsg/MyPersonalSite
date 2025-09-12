@@ -5,7 +5,7 @@ interface Project {
     description: string;
     technologies: string[];
     image: string;
-    demoUrl: string;
+    demoUrl?: string;
     githubUrl: string;
 }
 
@@ -24,7 +24,6 @@ const projects = [
         description: "An online French exam practice platform for reading and listening exercises, allowing users to complete questions in sequential or random order while tracking progress and performance.",
         technologies: ["Vue.js", "TypeScript", "Node.js", "Express", "MySQL", "AWS", "Docker"],
         image: "./images/tcf_read_3.jpg",
-        // demoUrl: "#",
         githubUrl: "https://github.com/lianaofsg/TCF-French-Exam"
     },
     {
@@ -42,10 +41,8 @@ const projects = [
         description: "A full-stack note-taking application enabling secure user authentication, and a responsive, seamless user experience.",
         technologies: ["Django", "Python", "React", "CSS3", "JavaScript", "PostgreSQL", "JWT"],
         image: "./images/note.jpg",
-        // demoUrl: "#",
         githubUrl: "https://github.com/lianaofsg/Django-React-FullStack-Note"
-    },
-    
+    }
 ];
 // Skill data
 const skills = [
@@ -181,7 +178,7 @@ class PortfolioApp {
                         ${project.technologies.map(tech => `<span class="tech-tag">${tech}</span>`).join('')}
                     </div>
                     <div class="project-links">
-                        <a href="${project.demoUrl}" class="project-link demo">View Demo</a>
+                        ${project.demoUrl ? `<a href="${project.demoUrl}" class="project-link demo">View Demo</a>` : ''}
                         <a href="${project.githubUrl}" class="project-link github">GitHub</a>
                     </div>
                 </div>

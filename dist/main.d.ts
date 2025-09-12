@@ -4,7 +4,7 @@ interface Project {
     description: string;
     technologies: string[];
     image: string;
-    demoUrl: string;
+    demoUrl?: string;
     githubUrl: string;
 }
 interface Skill {
