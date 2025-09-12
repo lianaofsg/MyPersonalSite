@@ -199,7 +199,7 @@ class PortfolioApp {
 
         const imageDivs = projectsGrid.querySelectorAll('.project-image');
 
-        imageDivs.forEach((div) => {
+        imageDivs.forEach((div, index) => {
             const img = div.querySelector('img');
             if (!img) return;
             
@@ -220,9 +220,20 @@ class PortfolioApp {
                 
                 // 创建新预览
                 this.currentPreview = document.createElement('div');
-                this.currentPreview.className = 'project-image-preview show';
-                this.currentPreview.innerHTML = `<img src='${img.src}' alt='' />`;
+                this.currentPreview.className = 'project-image-preview';
+                // 使用项目数据中的图片路径
+                const project = projects[index];
+                const imageSrc = project ? project.image : img.src;
+                console.log('Preview image src:', imageSrc, 'Project:', project?.title);
+                this.currentPreview.innerHTML = `<img src='${imageSrc}' alt='' onload="console.log('Preview image loaded:', '${imageSrc}')" onerror="console.error('Preview image failed:', '${imageSrc}')" />`;
                 document.body.appendChild(this.currentPreview);
+                
+                // 延迟添加show类，确保DOM已经渲染
+                setTimeout(() => {
+                    if (this.currentPreview) {
+                        this.currentPreview.classList.add('show');
+                    }
+                }, 10);
                 
                 this.currentPreview.addEventListener('mouseenter', () => {
                     if (this.hideTimeout) {
@@ -237,7 +248,7 @@ class PortfolioApp {
             });
             
             div.addEventListener('mouseleave', () => {
-                this.currentImageDiv = null;
+                // 延迟隐藏，给用户时间移动到预览上
                 this.hidePreview();
             });
             
@@ -267,7 +278,10 @@ class PortfolioApp {
     }
 
     private hidePreview(): void {
-        if (this.hideTimeout) return; // 防止重复使用
+        if (this.hideTimeout) {
+            clearTimeout(this.hideTimeout);
+            this.hideTimeout = null;
+        }
         
         this.hideTimeout = window.setTimeout(() => {
             if (this.currentPreview) {
@@ -281,7 +295,7 @@ class PortfolioApp {
                 }, 200);
             }
             this.hideTimeout = null;
-        }, 100);
+        }, 300); // 增加延迟时间到300ms
     }
 
     private isMouseOverImage(): boolean {
@@ -383,6 +397,7 @@ class PortfolioApp {
             }, 300);
         }, 3000);
     }
+
 }
 
 // Utility functions
@@ -411,84 +426,3 @@ class Utils {
 document.addEventListener('DOMContentLoaded', () => {
     new PortfolioApp();
 });
-
-// Add CSS animation classes
-const style = document.createElement('style');
-style.textContent = `
-    .animate-in {
-        animation: fadeInUp 0.6s ease forwards;
-    }
-
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .skill-progress {
-        transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .project-card {
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .stat-item {
-        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .timeline-content {
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .project-image-preview {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%) scale(0.8);
-        z-index: 10000;
-        background: white;
-        border-radius: 12px;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-        opacity: 0;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        pointer-events: none;
-        max-width: 90vw;
-        max-height: 90vh;
-        overflow: visible;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .project-image-preview.show {
-        opacity: 1;
-        transform: translate(-50%, -50%) scale(1);
-        pointer-events: auto;
-    }
-
-    .project-image-preview img {
-        max-width: 100%;
-        max-height: 100%;
-        width: auto;
-        height: auto;
-        object-fit: contain;
-        display: block;
-        border-radius: 8px;
-    }
-
-    .project-image {
-        cursor: pointer;
-        transition: transform 0.2s ease;
-    }
-
-    .project-image:hover {
-        transform: scale(1.02);
-    }
-`;
-document.head.appendChild(style);
