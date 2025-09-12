@@ -106,11 +106,68 @@ body {
 /* 英雄部分样式 */
 .hero {
     padding: 120px 0 80px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    background: 
+        linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%),
+        radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(168, 85, 247, 0.06) 0%, transparent 50%);
+    background-size: 100% 100%, 100% 100%, 100% 100%;
+    color: #1e293b;
     min-height: 100vh;
     display: flex;
     align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+/* 微妙的几何装饰 */
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        linear-gradient(45deg, transparent 48%, rgba(99, 102, 241, 0.03) 50%, transparent 52%),
+        linear-gradient(-45deg, transparent 48%, rgba(168, 85, 247, 0.02) 50%, transparent 52%);
+    background-size: 100px 100px, 80px 80px;
+    animation: subtleFloat 20s ease-in-out infinite;
+    z-index: 1;
+}
+
+@keyframes subtleFloat {
+    0%, 100% {
+        transform: translateY(0px) rotate(0deg);
+    }
+    50% {
+        transform: translateY(-10px) rotate(1deg);
+    }
+}
+
+/* 重点色彩装饰 */
+.hero::after {
+    content: '';
+    position: absolute;
+    top: 10%;
+    right: 10%;
+    width: 200px;
+    height: 200px;
+    background: linear-gradient(45deg, rgba(99, 102, 241, 0.1), rgba(168, 85, 247, 0.08));
+    border-radius: 50%;
+    filter: blur(40px);
+    animation: accentPulse 8s ease-in-out infinite;
+    z-index: 1;
+}
+
+@keyframes accentPulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.3;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 0.5;
+    }
 }
 
 .hero-container {
@@ -121,6 +178,8 @@ body {
     grid-template-columns: 1fr 1fr;
     gap: 4rem;
     align-items: center;
+    position: relative;
+    z-index: 2;
 }
 
 .hero-title {
@@ -142,10 +201,22 @@ body {
     display: block;
     font-size: 4rem;
     margin-bottom: 0.5rem;
-    background: linear-gradient(45deg, #fbbf24, #f59e0b);
+    background: linear-gradient(45deg, #6366f1, #8b5cf6, #a855f7);
+    background-size: 200% 200%;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    animation: nameGradient 4s ease-in-out infinite;
+    text-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
+}
+
+@keyframes nameGradient {
+    0%, 100% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
 }
 
 .hero-title .title {
@@ -178,39 +249,86 @@ body {
     border: none;
     cursor: pointer;
     font-size: 1rem;
+    position: relative;
+    z-index: 3;
+    pointer-events: auto;
 }
 
 .btn-primary {
-    background: #fbbf24;
-    color: #1f2937;
+    background: linear-gradient(45deg, #6366f1, #8b5cf6);
+    color: #ffffff;
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.btn-primary:hover::before {
+    left: 100%;
 }
 
 .btn-primary:hover {
-    background: #f59e0b;
+    background: linear-gradient(45deg, #4f46e5, #7c3aed);
     transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(251, 191, 36, 0.3);
+    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+    border-color: rgba(99, 102, 241, 0.4);
 }
 
 .btn-secondary {
     background: transparent;
-    color: white;
-    border: 2px solid white;
+    color: #6366f1;
+    border: 2px solid #6366f1;
 }
 
 .btn-secondary:hover {
     background: white;
-    color: #1f2937;
+    color: #6366f1;
     transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.2);
 }
 
 /* 个人资料卡片样式 */
 .profile-card {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(20px);
     border-radius: 20px;
     padding: 1.5rem;
     text-align: center;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.1),
+        0 0 0 1px rgba(255, 255, 255, 0.5);
+    position: relative;
+    overflow: hidden;
+}
+
+.profile-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #6366f1, transparent);
+}
+
+.profile-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 
+        0 12px 40px rgba(0, 0, 0, 0.15),
+        0 0 0 1px rgba(99, 102, 241, 0.3);
+    border-color: rgba(99, 102, 241, 0.4);
 }
 
 .profile-avatar {
@@ -232,11 +350,13 @@ body {
 .profile-info h3 {
     font-size: 1.5rem;
     margin-bottom: 0.5rem;
+    color: #1e293b;
 }
 
 .profile-info p {
     opacity: 0.8;
     margin-bottom: 1rem;
+    color: #64748b;
 }
 
 .social-links {
@@ -246,20 +366,23 @@ body {
 }
 
 .social-link {
-    color: white;
+    color: #3566a0;
     font-size: 1.5rem;
     transition: all 0.3s ease;
+    position: relative;
+    z-index: 3;
+    pointer-events: auto;
 }
 
 .social-link:hover {
-    color: #fbbf24;
+    color: #4700ed;
     transform: translateY(-2px);
 }
 
 .profile-education {
     margin-top: 1.5rem;
     padding-top: 1rem;
-    border-top: 1px solid #e5e7eb;
+    border-top: 1px solid #e2e8f0;
     color: #374151;
 }
 
@@ -272,17 +395,18 @@ body {
     font-size: 1.1rem;
     font-weight: 600;
     margin-bottom: 0.5rem;
-    color: #f59e0b;
+    color: #000000;
 }
 
 .profile-education p {
     margin: 0.2rem 0;
     font-size: 0.95rem;
-    color: white;
+    color: #64748b;
 }
 
 .sign-text {
     color: #f59e0b;
+    font-weight: 600;
 }
 
 /* 通用部分样式 */
@@ -906,4 +1030,100 @@ body {
     .projects-grid {
         grid-template-columns: 1fr;
     }
+}
+
+/* Portfolio App Dynamic Styles */
+.animate-in {
+    animation: fadeInUp 0.6s ease forwards;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.skill-progress {
+    transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.project-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.stat-item {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.timeline-content {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.project-image-preview {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.8);
+    z-index: 10000;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow: visible;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.project-image-preview.show {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+    pointer-events: auto;
+}
+
+.project-image-preview img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    border-radius: 8px;
+}
+
+.project-image {
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.project-image:hover {
+    transform: scale(1.02);
+}
+
+/* 鼠标轨迹粒子效果 */
+@keyframes trailParticleFade {
+    0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.3);
+    }
+}
+
+.trail-particle {
+    position: fixed;
+    pointer-events: none;
+    z-index: 1000;
+    border-radius: 50%;
 }

@@ -57,6 +57,7 @@ class PortfolioApp {
         this.setupScrollEffects();
         this.setupFormHandling();
         this.animateSkillBars();
+        this.setupMouseTrailParticles();
     }
     setupEventListeners() {
         // Mobile navigation menu toggle
@@ -163,7 +164,7 @@ class PortfolioApp {
         if (!projectsGrid)
             return;
         const imageDivs = projectsGrid.querySelectorAll('.project-image');
-        imageDivs.forEach((div) => {
+        imageDivs.forEach((div, index) => {
             const img = div.querySelector('img');
             if (!img)
                 return;
@@ -181,9 +182,19 @@ class PortfolioApp {
                 this.currentImageDiv = div;
                 // 创建新预览
                 this.currentPreview = document.createElement('div');
-                this.currentPreview.className = 'project-image-preview show';
-                this.currentPreview.innerHTML = `<img src='${img.src}' alt='' />`;
+                this.currentPreview.className = 'project-image-preview';
+                // 使用项目数据中的图片路径
+                const project = projects[index];
+                const imageSrc = project ? project.image : img.src;
+                console.log('Preview image src:', imageSrc, 'Project:', project?.title);
+                this.currentPreview.innerHTML = `<img src='${imageSrc}' alt='' onload="console.log('Preview image loaded:', '${imageSrc}')" onerror="console.error('Preview image failed:', '${imageSrc}')" />`;
                 document.body.appendChild(this.currentPreview);
+                // 延迟添加show类，确保DOM已经渲染
+                setTimeout(() => {
+                    if (this.currentPreview) {
+                        this.currentPreview.classList.add('show');
+                    }
+                }, 10);
                 this.currentPreview.addEventListener('mouseenter', () => {
                     if (this.hideTimeout) {
                         clearTimeout(this.hideTimeout);
@@ -195,7 +206,7 @@ class PortfolioApp {
                 });
             });
             div.addEventListener('mouseleave', () => {
-                this.currentImageDiv = null;
+                // 延迟隐藏，给用户时间移动到预览上
                 this.hidePreview();
             });
             div.addEventListener('mousemove', (e) => {
@@ -220,8 +231,10 @@ class PortfolioApp {
         });
     }
     hidePreview() {
-        if (this.hideTimeout)
-            return; // 防止重复使用
+        if (this.hideTimeout) {
+            clearTimeout(this.hideTimeout);
+            this.hideTimeout = null;
+        }
         this.hideTimeout = window.setTimeout(() => {
             if (this.currentPreview) {
                 this.currentPreview.classList.remove('show');
@@ -234,7 +247,7 @@ class PortfolioApp {
                 }, 200);
             }
             this.hideTimeout = null;
-        }, 100);
+        }, 300); // 增加延迟时间到300ms
     }
     isMouseOverImage() {
         if (!this.currentImageDiv)
@@ -255,6 +268,74 @@ class PortfolioApp {
                 }, index * 200);
             }
         });
+    }
+    setupMouseTrailParticles() {
+        let mouseX = 0;
+        let mouseY = 0;
+        let isMouseMoving = false;
+        let trailTimeout = null;
+        // 鼠标移动事件
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            isMouseMoving = true;
+            // 清除之前的超时
+            if (trailTimeout) {
+                clearTimeout(trailTimeout);
+            }
+            // 创建轨迹粒子
+            this.createTrailParticle(mouseX, mouseY);
+            // 设置超时，停止创建粒子
+            trailTimeout = window.setTimeout(() => {
+                isMouseMoving = false;
+            }, 100);
+        });
+        // 定期创建粒子（即使鼠标不移动）
+        setInterval(() => {
+            if (isMouseMoving) {
+                this.createTrailParticle(mouseX, mouseY);
+            }
+        }, 50);
+    }
+    createTrailParticle(x, y) {
+        const particle = document.createElement('div');
+        particle.className = 'trail-particle';
+        // 随机属性
+        const size = Math.random() * 4 + 2;
+        const opacity = Math.random() * 0.8 + 0.2;
+        const duration = Math.random() * 1000 + 500;
+        // 粒子颜色数组
+        const colors = [
+            'rgba(99, 102, 241, 0.6)', // 紫色
+            'rgba(139, 92, 246, 0.6)', // 深紫色
+            'rgba(168, 85, 247, 0.6)', // 亮紫色
+            'rgba(232, 121, 249, 0.6)', // 粉紫色
+            'rgba(244, 114, 182, 0.6)' // 粉色
+        ];
+        const randomColor = colors[Math.floor(Math.random() * colors.length)];
+        // 设置样式
+        Object.assign(particle.style, {
+            position: 'fixed',
+            left: `${x}px`,
+            top: `${y}px`,
+            width: `${size}px`,
+            height: `${size}px`,
+            background: randomColor,
+            borderRadius: '50%',
+            pointerEvents: 'none',
+            zIndex: '1000',
+            transform: 'translate(-50%, -50%)',
+            boxShadow: `0 0 ${size * 2}px ${randomColor}`,
+            opacity: opacity.toString(),
+            animation: `trailParticleFade ${duration}ms ease-out forwards`
+        });
+        document.body.appendChild(particle);
+        // 自动移除
+        setTimeout(() => {
+            if (particle.parentNode) {
+                particle.parentNode.removeChild(particle);
+            }
+        }, duration);
     }
     setupFormHandling() {
         if (this.contactForm) {
@@ -346,84 +427,4 @@ class Utils {
 document.addEventListener('DOMContentLoaded', () => {
     new PortfolioApp();
 });
-// Add CSS animation classes
-const style = document.createElement('style');
-style.textContent = `
-    .animate-in {
-        animation: fadeInUp 0.6s ease forwards;
-    }
-
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .skill-progress {
-        transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .project-card {
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .stat-item {
-        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .timeline-content {
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .project-image-preview {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%) scale(0.8);
-        z-index: 10000;
-        background: white;
-        border-radius: 12px;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-        opacity: 0;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        pointer-events: none;
-        max-width: 90vw;
-        max-height: 90vh;
-        overflow: visible;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .project-image-preview.show {
-        opacity: 1;
-        transform: translate(-50%, -50%) scale(1);
-        pointer-events: auto;
-    }
-
-    .project-image-preview img {
-        max-width: 100%;
-        max-height: 100%;
-        width: auto;
-        height: auto;
-        object-fit: contain;
-        display: block;
-        border-radius: 8px;
-    }
-
-    .project-image {
-        cursor: pointer;
-        transition: transform 0.2s ease;
-    }
-
-    .project-image:hover {
-        transform: scale(1.02);
-    }
-`;
-document.head.appendChild(style);
 //# sourceMappingURL=main.js.map
