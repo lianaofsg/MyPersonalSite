@@ -62,6 +62,10 @@ class PortfolioApp {
     private navToggle: HTMLElement | null;
     private navMenu: HTMLElement | null;
     private contactForm: HTMLFormElement | null;
+    private currentPreview: HTMLElement | null = null;
+    private hideTimeout: number | null = null;
+    private currentImageDiv: HTMLElement | null = null;
+    private mousePosition = { x: 0, y: 0 };
 
     constructor() {
         this.navbar = document.getElementById('navbar');
@@ -184,6 +188,112 @@ class PortfolioApp {
                 </div>
             </div>
         `).join('');
+
+        // 添加图片预览功能
+        this.setupImagePreview();
+    }
+
+    private setupImagePreview(): void {
+        const projectsGrid = document.getElementById('projects-grid');
+        if (!projectsGrid) return;
+
+        const imageDivs = projectsGrid.querySelectorAll('.project-image');
+
+        imageDivs.forEach((div) => {
+            const img = div.querySelector('img');
+            if (!img) return;
+            
+            div.addEventListener('mouseenter', (e) => {
+                // 清除之前的超时
+                if (this.hideTimeout) {
+                    clearTimeout(this.hideTimeout);
+                    this.hideTimeout = null;
+                }
+                
+                // 清除之前的预览
+                if (this.currentPreview) {
+                    this.currentPreview.remove();
+                }
+                
+                // 设置当前图片div
+                this.currentImageDiv = div as HTMLElement;
+                
+                // 创建新预览
+                this.currentPreview = document.createElement('div');
+                this.currentPreview.className = 'project-image-preview show';
+                this.currentPreview.innerHTML = `<img src='${img.src}' alt='' />`;
+                document.body.appendChild(this.currentPreview);
+                
+                this.currentPreview.addEventListener('mouseenter', () => {
+                    if (this.hideTimeout) {
+                        clearTimeout(this.hideTimeout);
+                        this.hideTimeout = null;
+                    }
+                });
+                
+                this.currentPreview.addEventListener('mouseleave', () => {
+                    this.hidePreview();
+                });
+            });
+            
+            div.addEventListener('mouseleave', () => {
+                this.currentImageDiv = null;
+                this.hidePreview();
+            });
+            
+            div.addEventListener('mousemove', (e) => {
+                this.mousePosition.x = (e as MouseEvent).clientX;
+                this.mousePosition.y = (e as MouseEvent).clientY;
+            });
+        });
+        
+        // 添加全局事件监听器
+        window.addEventListener('scroll', () => {
+            if (this.currentPreview && !this.isMouseOverImage()) {
+                this.hidePreview();
+            }
+        });
+        
+        window.addEventListener('resize', () => {
+            if (this.currentPreview) {
+                this.hidePreview();
+            }
+        });
+        
+        document.addEventListener('mousemove', (e) => {
+            this.mousePosition.x = e.clientX;
+            this.mousePosition.y = e.clientY;
+        });
+    }
+
+    private hidePreview(): void {
+        if (this.hideTimeout) return; // 防止重复使用
+        
+        this.hideTimeout = window.setTimeout(() => {
+            if (this.currentPreview) {
+                this.currentPreview.classList.remove('show');
+                setTimeout(() => {
+                    if (this.currentPreview && this.currentPreview.parentNode) {
+                        this.currentPreview.parentNode.removeChild(this.currentPreview);
+                    }
+                    this.currentPreview = null;
+                    this.currentImageDiv = null;
+                }, 200);
+            }
+            this.hideTimeout = null;
+        }, 100);
+    }
+
+    private isMouseOverImage(): boolean {
+        if (!this.currentImageDiv) return false;
+        
+        const rect = this.currentImageDiv.getBoundingClientRect();
+        return (
+            this.mousePosition.x >= rect.left &&
+            this.mousePosition.x <= rect.right &&
+            this.mousePosition.y >= rect.top &&
+            this.mousePosition.y <= rect.bottom
+        );
     }
 
     private animateSkillBars(): void {
@@ -334,6 +444,51 @@ style.textContent = `
 
     .timeline-content {
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .project-image-preview {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0.8);
+        z-index: 10000;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        opacity: 0;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        pointer-events: none;
+        max-width: 90vw;
+        max-height: 90vh;
+        overflow: visible;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .project-image-preview.show {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+        pointer-events: auto;
+    }
+
+    .project-image-preview img {
+        max-width: 100%;
+        max-height: 100%;
+        width: auto;
+        height: auto;
+        object-fit: contain;
+        display: block;
+        border-radius: 8px;
+    }
+
+    .project-image {
+        cursor: pointer;
+        transition: transform 0.2s ease;
+    }
+
+    .project-image:hover {
+        transform: scale(1.02);
     }
 `;
 document.head.appendChild(style);
