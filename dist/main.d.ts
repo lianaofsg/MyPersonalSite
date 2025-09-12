@@ -12,8 +12,28 @@ interface Skill {
     level: number;
     category: string;
 }
-declare const projects: Project[];
-declare const skills: Skill[];
+declare const projects: ({
+    id: number;
+    title: string;
+    description: string;
+    technologies: string[];
+    image: string;
+    githubUrl: string;
+    demoUrl?: undefined;
+} | {
+    id: number;
+    title: string;
+    description: string;
+    technologies: string[];
+    image: string;
+    demoUrl: string;
+    githubUrl: string;
+})[];
+declare const skills: {
+    name: string;
+    level: number;
+    category: string;
+}[];
 declare class PortfolioApp {
     private navbar;
     private navToggle;
