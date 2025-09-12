@@ -4,7 +4,7 @@
   "description": "A professional programmer portfolio website",
   "main": "index.html",
   "scripts": {
-    "build": "tsc && echo 'Build completed successfully'",
+    "build": "tsc && cp dist/main.js ./main.js && echo 'Build completed successfully'",
     "dev": "tsc --watch",
     "start": "npx live-server --port=3000 --open=/index.html",
     "vercel-build": "npm run build"
