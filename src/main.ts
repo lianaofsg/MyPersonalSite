@@ -17,38 +17,38 @@ interface Skill {
 }
 
 // Project data
-const projects: Project[] = [
+const projects = [
     {
         id: 1,
-        title: "E-commerce Platform Management System",
-        description: "Modern e-commerce platform based on React and Node.js, including complete functional modules for user management, product management, order processing, and more.",
-        technologies: ["React", "Node.js", "MongoDB", "Express", "Redux"],
-        image: "images/note.jpg",
-        demoUrl: "#",
-        githubUrl: "#"
+        title: "TCF French Exam System(Full-Stack)",
+        description: "An online French exam practice platform for reading and listening exercises, allowing users to complete questions in sequential or random order while tracking progress and performance.",
+        technologies: ["Vue.js", "TypeScript", "Node.js", "Express", "MySQL", "AWS", "Docker"],
+        image: "images/tcf_read_3.jpg",
+        // demoUrl: "#",
+        githubUrl: "https://github.com/lianaofsg/TCF-French-Exam"
     },
     {
         id: 2,
-        title: "Task Management Application",
-        description: "Real-time task management application built with Vue.js and Firebase, supporting team collaboration and task tracking.",
-        technologies: ["Vue.js", "Firebase", "Vuex", "CSS3", "JavaScript"],
-        image: "fas fa-tasks",
-        demoUrl: "#",
-        githubUrl: "#"
+        title: "AdventureHub",
+        description: "A responsive web platform enabling users to discover, explore, and engage with outdoor adventure activities seamlessly across devices.",
+        technologies: ["React", "Next.js", "Tailwind CSS4"],
+        image: "images/adventure.jpg",
+        demoUrl: "https://adventure-react-next-tailwind.vercel.app",
+        githubUrl: "https://github.com/lianaofsg/Adventure-React-Next-Tailwind"
     },
     {
         id: 3,
-        title: "Data Visualization Dashboard",
-        description: "Data visualization project based on D3.js and React, showcasing interactive charts and reports for complex data.",
-        technologies: ["React", "D3.js", "TypeScript", "Chart.js", "CSS3"],
-        image: "fas fa-chart-line",
-        demoUrl: "#",
-        githubUrl: "#"
-    }
+        title: "Note App(Full-Stack)",
+        description: "A full-stack note-taking application enabling secure user authentication, and a responsive, seamless user experience.",
+        technologies: ["Django", "Python", "React", "CSS3", "JavaScript", "PostgreSQL", "JWT"],
+        image: "images/note.jpg",
+        // demoUrl: "#",
+        githubUrl: "https://github.com/lianaofsg/Django-React-FullStack-Note"
+    },
+    
 ];
-
 // Skill data
-const skills: Skill[] = [
+const skills = [
     { name: "HTML/CSS", level: 95, category: "Frontend Technologies" },
     { name: "JavaScript/TypeScript", level: 90, category: "Frontend Technologies" },
     { name: "React/Vue.js", level: 85, category: "Frontend Technologies" },
@@ -56,7 +56,7 @@ const skills: Skill[] = [
     { name: "Python", level: 88, category: "Backend Technologies" },
     { name: "Java", level: 90, category: "Backend Technologies" },
     { name: "SQL/NoSQL", level: 82, category: "Backend Technologies" },
-    { name: "Docker", level: 80, category: "Backend Technologies" }
+    { name: "Docker", level: 75, category: "Backend Technologies" }
 ];
 
 // Main application class

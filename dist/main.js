@@ -134,11 +134,10 @@ class PortfolioApp {
     }
     renderProjects() {
         const projectsGrid = document.getElementById('projects-grid');
-        if (!projectsGrid)
-            return;
-        projectsGrid.innerHTML = projects.map(project => `
+        if (!projectsGrid) return;
+        projectsGrid.innerHTML = projects.map((project, idx) => `
             <div class="project-card" data-aos="fade-up">
-                <div class="project-image">
+                <div class="project-image" data-idx="${idx}" >
                     ${project.image.startsWith('fas ') ? `<i class="${project.image}"></i>` : `<img src="${project.image}" alt="${project.title}" />`}
                 </div>
                 <div class="project-content">
@@ -154,6 +153,111 @@ class PortfolioApp {
                 </div>
             </div>
         `).join('');
+
+        // Hover to see the bigger picture.
+        const imageDivs = projectsGrid.querySelectorAll('.project-image');
+        let currentPreview = null;
+        let hideTimeout = null;
+        let currentImageDiv = null;
+        let mousePosition = { x: 0, y: 0 };
+
+        imageDivs.forEach((div, idx) => {
+            const img = div.querySelector('img');
+            if (!img) return;
+            
+            div.addEventListener('mouseenter', (e) => {
+                // Clear previous TimeOut
+                if (hideTimeout) {
+                    clearTimeout(hideTimeout);
+                    hideTimeout = null;
+                }
+                
+                // Clear previous preview
+                if (currentPreview) {
+                    currentPreview.remove();
+                }
+                
+                // Set current image div
+                currentImageDiv = div;
+                
+                // Create new preview
+                currentPreview = document.createElement('div');
+                currentPreview.className = 'project-image-preview show';
+                currentPreview.innerHTML = `<img src='${img.src}' alt='' />`;
+                document.body.appendChild(currentPreview);
+                
+                currentPreview.addEventListener('mouseenter', () => {
+                    if (hideTimeout) {
+                        clearTimeout(hideTimeout);
+                        hideTimeout = null;
+                    }
+                });
+                
+                currentPreview.addEventListener('mouseleave', () => {
+                    hidePreview();
+                });
+            });
+            
+            div.addEventListener('mouseleave', () => {
+                currentImageDiv = null;
+                hidePreview();
+            });
+            
+            div.addEventListener('mousemove', (e) => {
+                mousePosition.x = e.clientX;
+                mousePosition.y = e.clientY;
+            });
+        });
+        
+        function hidePreview() {
+            if (hideTimeout) return; // prevent reuse
+            
+            hideTimeout = setTimeout(() => {
+                if (currentPreview) {
+                    currentPreview.classList.remove('show');
+                    setTimeout(() => {
+                        if (currentPreview && currentPreview.parentNode) {
+                            currentPreview.parentNode.removeChild(currentPreview);
+                        }
+                        currentPreview = null;
+                        currentImageDiv = null;
+                    }, 200);
+                }
+                hideTimeout = null;
+            }, 100);
+        }
+        
+        function isMouseOverImage() {
+            if (!currentImageDiv) return false;
+            
+            const rect = currentImageDiv.getBoundingClientRect();
+            return (
+                mousePosition.x >= rect.left &&
+                mousePosition.x <= rect.right &&
+                mousePosition.y >= rect.top &&
+                mousePosition.y <= rect.bottom
+            );
+        }
+        
+        // Hide preview when scrolling, but only if mouse is not over the image
+        window.addEventListener('scroll', () => {
+            if (currentPreview && !isMouseOverImage()) {
+                hidePreview();
+            }
+        });
+        
+        // Hide preview when window is resized
+        window.addEventListener('resize', () => {
+            if (currentPreview) {
+                hidePreview();
+            }
+        });
+        
+        // Update mouse position on document mousemove
+        document.addEventListener('mousemove', (e) => {
+            mousePosition.x = e.clientX;
+            mousePosition.y = e.clientY;
+        });
     }
     animateSkillBars() {
         const skillBars = document.querySelectorAll('.skill-progress');
